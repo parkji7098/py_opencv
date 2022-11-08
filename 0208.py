@@ -1,6 +1,7 @@
 # 0208.py
 import cv2 
-cap = cv2.VideoCapture('http://192.168.0.5:4747/video')
+# cap = cv2.VideoCapture('http://192.168.0.5:4747/video')
+cap = cv2.VideoCapture('./data/vtest.avi')
 
 frame_size = (
     int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
