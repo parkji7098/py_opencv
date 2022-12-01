@@ -5,27 +5,30 @@ import time
 import matplotlib.pyplot as plt
 
 
+# 비디오 캡쳐준비 0번 카메라가 메인카메라, 간혹 1일때가 있음
+# 해당 웹캠의 usb는 다른곳에서 사용중이지 않아야함 (usb포트는 하나의 연결만 지원)
 cap = cv2.VideoCapture(0)
 
 frameSize = (
-    int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
-    int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)),
+    int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), #넓이
+    int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)), #높이
 )
 print('frame_size =', frameSize)
 
-
+# shape = (높이,넓이)
 mask = np.zeros(shape=(frameSize[1], frameSize[0]), dtype=np.uint8)
 markers = np.zeros(shape=(frameSize[1], frameSize[0]), dtype=np.int32)
 
 cv2.circle(mask, (10,10), 10, (255,255,255), -1)
-cv2.circle(mask, (frameSize[0]//2,frameSize[1]//2), 10, (255,255,255), -1)
+cv2.circle(mask, (frameSize[0]//2, frameSize[1]//2), 10, (255,255,255), -1)
 
 while True:
-    retval, frame = cap.read()
-    key = cv2.waitKey(30)
 
+    key = cv2.waitKey(30)
     if key == 0x1B:  #esc, 27
         break
+
+    retval, frame = cap.read()
 
     constours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     print('len(contours)=', len(constours))
@@ -50,10 +53,13 @@ while True:
         
     dst = cv2.addWeighted(frame, 0.4, dst, 0.6, 0)  #합성
 
+    # 마커를 시각적으로 표시
     cv2.circle(dst, (10,10), 10, (255,255,255), 2)
     cv2.circle(dst, (frameSize[0]//2,frameSize[1]//2), 10, (255,255,255), 2)
 
     cv2.imshow('dst', dst)
+
+
 
     # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     # retval, gray = cv2.threshold(gray, 120, 255, cv2.THRESH_BINARY)
